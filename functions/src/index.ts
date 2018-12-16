@@ -265,29 +265,30 @@ async function markQuizBusy(user:string, quiz:string) {
   });
 }
 
-async function releaseQuiz(user:string, quiz:string) {
-  return new Promise((res, rej) => {
+async function releaseQuiz(user:string, quiz:string):Promise<void> {
+  return new Promise<void>((res, rej) => {
     db.ref(`busy/${user}`)
     .once("value", (result:any) => {
       const data:any = result.val();
       if(!data) {
-        return res(false);
-      }
-      let key = null;
-      const dKeys = Object.keys(data);
-      for (const k of dKeys) {
-        if(data[k].busy === quiz) {
-          key = k;
-          break;
+        res();
+      } else {
+        let key = null;
+        const dKeys = Object.keys(data);
+        for (const k of dKeys) {
+          if(data[k].busy === quiz) {
+            key = k;
+            break;
+          }
         }
-      }
-      if (key) {
-        db.ref(`busy/${user}/${key}`)
-        .remove()
-        .then((r:any) => {
-          res(r);
-        })
-        .catch(rej);
+        if (key) {
+          db.ref(`busy/${user}/${key}`)
+          .remove()
+          .then((r:any) => {
+            res();
+          })
+          .catch(rej);
+        }
       }
     }).catch(rej);
   });
@@ -309,27 +310,21 @@ async function getUserQuizBusy(user:string): Promise<string[]> {
   });
 }
 
-async function clearQuizHistory(user:string, quiz:string) {
-  return new Promise((res, rej) => {
+async function clearQuizHistory(user:string, quiz:string):Promise<void> {
+  return new Promise<void>((res, rej) => {
     db.ref(`users/${user}`)
     .once("value", (history:any) => {
       const data = history.val();
-      if(!data) {
-        return res(false);
+      if(!data || !data.history) {
+        res();
+      } else {
+        data.history = data.history.filter((i) => {
+          return i.key !== quiz;
+        });
+        db.ref(`users/${user}`)
+        .set(data)
+        .then(()=>{ res(); }).catch(rej);
       }
-      if(!data.history) {
-        return res(false);
-      }
-
-      data.history = data.history.filter((i) => {
-        return i.key !== quiz;
-      });
-
-      console.log(data);
-
-      db.ref(`users/${user}`)
-      .set(data)
-      .then(()=>{ res(true); }).catch(rej);
     })
     .catch(rej);
   });
@@ -345,14 +340,12 @@ exports.releaseQuiz = functions.https.onRequest((req, res) => {
     const user_id:string = req.body.user_id;
     return admin.auth().verifyIdToken(tokenId)
       .then(async (decoded) => {
-
         if(ADMIN_IDS.indexOf(decoded.uid) === -1) {
           throw new Error(`Restricted area`);
         }
-
         try {
-          const release = await releaseQuiz(user_id, quiz_id);
-          res.status(200).send(release);
+          await releaseQuiz(user_id, quiz_id);
+          res.status(200).send({});
         } catch (error) {
           res.status(401).send(error.message);
         }
