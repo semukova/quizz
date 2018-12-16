@@ -2,11 +2,20 @@
   <div class="container">
     <h1 v-if="!currentQuiz">Доступные опросы</h1>
     <h1 v-if="currentQuiz">Текущий опрос</h1>
-    <Quiz 
-      v-if="currentQuiz"
+
+    <div v-if="result" class="alert alert-warning alert-dismissible fade show" role="alert">
+      Тестирование завершено, общий счет: {{result}}
+      <button @click="onResultClose" type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+
+    <Quiz
+      v-if="currentQuiz && !result"
       :quiz="currentQuiz"
       v-on:end="handleEnd">
     </Quiz>
+
     <br>
     <table v-if="!currentQuiz" class="table">
       <thead>
@@ -46,13 +55,17 @@ export default class Home extends Vue {
   error:string = "";
   quizzes: any[] = [];
   currentQuiz: any = null;
+  result:any = null;
 
   created() {
     this.getQuizzesList();
   }
 
-  handleEnd() {
-    this.currentQuiz = null;
+  handleEnd(perc:number) {
+    this.result = perc;
+  }
+
+  onResultClose() {
     this.getQuizzesList();
   }
 
@@ -87,6 +100,8 @@ export default class Home extends Vue {
       this.quizzes = response.data.list;
       if (response.data.current) {
         this.currentQuiz = response.data.current;
+      } else {
+        this.currentQuiz = null;
       }
     }).catch((err) => {
       // console.log(err);

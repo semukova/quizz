@@ -49,7 +49,7 @@ export default class Quiz extends Vue {
       const data:any = response.data;
       if (data.complete) {
         this.questionStage = false;
-        this.$emit('end');
+        this.$emit('end', data.perc);
       } else {
         this.currentQuestion = data.currentQuestion;
       }

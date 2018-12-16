@@ -28,7 +28,7 @@
 <script lang="ts">
 import { Component, Prop, Vue, Emit } from 'vue-property-decorator';
 import { IQuestionData } from "../types";
-
+import { DEFAULT_AUTH_DOMAIN } from "@/constants";
 import firebase from 'firebase';
 
 @Component
@@ -36,6 +36,7 @@ export default class Login extends Vue {
   email:string = "";
   password:string = "";
   error:string = "";
+ 
   onLoginClick() {
     firebase.auth().signInWithEmailAndPassword(this.email, this.password).then(
       (user) => {

@@ -11,7 +11,8 @@
               <input id="title" type="text" v-model="text" class="form-control">
             </div>
             <div class="row-question" v-for="(question, q_key, q_index) in questions" :key="`${q_key}`">
-              <hr/>
+              <h4>Вопрос № {{ q_key + 1 }}</h4>
+              <input @click="onDelQuestionClick(q_key)" type="button" value="Удалить" class="btn btn-danger btn-sm">
               <div class="form-group">
                 <label for="text">Текст:</label>
                 <input id="text" type="text" v-model="question.text" class="form-control">
@@ -33,6 +34,7 @@
                 <div class="row-question" v-for="(answer, a_key, a_index) in question.answers" :key="`${a_key}`">
                   <label :for="'answer'+q_index+'_'+a_index">Вариант №{{a_key+1}}:</label>
                   <input :id="'answer'+q_index+'_'+a_index" type="text" v-model="answer.value" class="form-control">
+                  <input @click="onDelAnswerClick(q_key, a_index)" type="button" value="Удалить ответ" class="btn btn-danger btn-sm">
                 </div>
                 <br>
                 <div class="form-group">
@@ -42,10 +44,10 @@
             </div>
             <hr>
             <div class="form-group">
-              <input @click="onAddQuestionClick" type="button" value="Добавить вопрос" class="btn btn-success btn-sm">
-            </div>
-            <div class="form-group">
-              <input type="submit" value="Отправить" class="btn btn-primary btn-sm">
+              <div class="btn-group" role="group">
+                <input @click="onAddQuestionClick" type="button" value="Добавить вопрос" class="btn btn-success btn-sm">
+                <input type="submit" value="Отправить" class="btn btn-primary btn-sm">
+              </div>
             </div>
           </form>
       </div>
@@ -72,6 +74,7 @@ export default class AddQuiz extends Vue {
       answers: [],
     });
   }
+
   onAddAnswerClick(q_index:number) {
     if (this.questions[q_index]) {
       this.questions[q_index].answers.push({
@@ -79,6 +82,15 @@ export default class AddQuiz extends Vue {
       });
     }
   }
+  
+  onDelAnswerClick(q_index:number, a_index:number) {
+    this.questions[q_index].answers.splice(a_index, 1);
+  }
+
+  onDelQuestionClick(a_index:number) {
+    this.questions.splice(a_index, 1);
+  }
+
   addItem() {
     db.ref("quizzes").push({
       title : this.title,

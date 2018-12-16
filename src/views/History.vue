@@ -37,6 +37,7 @@
                     <td>{{ question.score }}</td>
                   </tr>
                 </tbody>
+                <input @click="onReleaseQuiz(quiz.user_id, quiz.quiz_id)" type="button" value="Сборос" class="btn btn-success btn-sm">
               </table>
             </td>
           </tr>        
@@ -87,6 +88,8 @@ export default class History extends Vue {
       key: user.key + quiz.key,
       user: user.email,
       quiz: quiz.quiz_text,
+      user_id: user.key,
+      quiz_id: quiz.key,
     }
   }
 
@@ -99,16 +102,26 @@ export default class History extends Vue {
           const user:any = response.data[usersKeys[i]];
           for(let j = 0; j < user.history.length; j++) {
             const quiz:any = user.history[j];
-            console.log(quiz);
-            this.quizzes.push(
-              this.mapUserStat(user, quiz),
-            )
+            if(quiz.complete) {
+              this.quizzes.push(
+                this.mapUserStat(user, quiz),
+              )
+            }
           }
         }
       }
     }).catch((err) => {
       // console.log(err);
     });  
+  }
+
+  onReleaseQuiz(user_id:string, quiz_id:string) {
+    callApi("releaseQuiz", { user_id, quiz_id })
+    .then((response:any) => {
+
+    }).catch((err) => {
+      // console.log(err);
+    }); 
   }
 }
 </script>

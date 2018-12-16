@@ -4,7 +4,7 @@
     <form class="form">
       <div class="form-group">
         <label for="email">Email</label>
-        <input class="form-control" id="email" type="text" v-model="email" placeholder="Email"><br>
+        <input class="form-control" id="email" type="text" v-model="email" placeholder="email"><br>
       </div>
       <div class="form-group">
         <label for="password">Пароль</label>
@@ -27,6 +27,7 @@
 <script lang="ts">
 import { Component, Prop, Vue, Emit } from 'vue-property-decorator';
 import { IQuestionData } from "../types";
+import { DEFAULT_AUTH_DOMAIN } from "@/constants";
 
 import firebase from 'firebase';
 

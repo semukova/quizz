@@ -10,8 +10,11 @@
           <li class="nav-item active">
             <router-link class="nav-link" to="/">Опросы <span class="sr-only">(current)</span></router-link>
           </li>
-          <li class="nav-item">
+          <li v-if="isAdmin()" class="nav-item">
             <router-link class="nav-link" to="/history">Статистика</router-link>
+          </li>
+          <li v-if="isAdmin()" class="nav-item">
+            <router-link class="nav-link" to="/quizzes">Панель управления</router-link>
           </li>
         </ul>
         <form class="form-inline my-2 my-lg-0">
@@ -26,6 +29,7 @@
 <script lang="ts">
 import { Component, Prop, Vue, Emit } from 'vue-property-decorator';
 import { db } from './db';
+import { ADMIN_IDS } from '@/constants';
 import firebase from 'firebase';
 @Component
 export default class App extends Vue {
@@ -41,6 +45,10 @@ export default class App extends Vue {
   }
   isAuth() {
     return firebase.auth().currentUser;
+  }
+  isAdmin() {
+    const user:any = firebase.auth().currentUser;
+    return ADMIN_IDS.indexOf(user.uid) !== -1;
   }
 }
 </script>
