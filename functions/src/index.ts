@@ -45,29 +45,32 @@ async function getAllQuizzes() {
  * Start quizz
  *
  * @param {string} user
- * @param {string} quiz
+ * @param {any} quiz
  * @returns
  */
-async function startQuiz(user:string, quiz:string) {
+async function startQuiz(user:string, id:string, quiz:any) {
   const userData:any = await getUserData(user);
   if (userData.current) {
     throw new Error(`Quizz ${userData.current.key} already started`);
   }
   userData.current = {
-    key: quiz,
+    key: id,
     question: 0,
   };
   if (!userData.history) {
     userData.history = [];
   }
+  console.log(quiz);
   userData.history.push({
-    key:quiz,
+    key:id,
+    quiz_text: quiz.text,
     complete: false,
     questions:[{
       key: 0,
       attempts: 0,
       start: Date.now(),
       stop: 0,
+      text: quiz.questions[0].text,
     }]   
   })
   return new Promise((res, rej) => {
@@ -106,6 +109,7 @@ function nextQuestion(userData, quiz, quizzData) {
       attempts: 0,
       start: Date.now(),
       stop: 0,
+      text: quizzData.questions[userData.current.question].text,
     });
   } else {
     quizHistory.complete = true;
@@ -175,8 +179,9 @@ async function answerQuestion(
   });
 }
 
-async function createDefaultUserData(user:string) {
+async function createDefaultUserData(user:string, email:string) {
   const data = {
+    email,
     key: user,
     history : [],
   };
@@ -189,10 +194,10 @@ async function createDefaultUserData(user:string) {
   });
 }
 
-async function getUserQuizzes(user:string) {
+async function getUserQuizzes(user:string, data:any) {
   let userData:any = await getUserData(user);
   if(!userData) {
-    userData = await createDefaultUserData(user);
+    userData = await createDefaultUserData(user, data.email);
   }
   let quizzzes = await getAllQuizzes();
   if (userData.history) {
@@ -226,7 +231,7 @@ exports.quizzesList = functions.https.onRequest((req, res) => {
     return admin.auth().verifyIdToken(tokenId)
       .then(async (decoded) => {
         try {
-          const quizzes = await getUserQuizzes(decoded.uid);
+          const quizzes = await getUserQuizzes(decoded.uid, decoded);
           res.status(200).send(quizzes);
         } catch (error) {
           res.status(401).send(error.message);
@@ -245,9 +250,9 @@ exports.startQuiz = functions.https.onRequest((req, res) => {
     return admin.auth().verifyIdToken(tokenId)
       .then(async (decoded) => {
         try {
-          await startQuiz(decoded.uid, id);
           const quiz = await getQuizz(id);
-          res.status(200).send({
+          await startQuiz(decoded.uid, id, quiz);
+           res.status(200).send({
             id,
             data: quiz
           });

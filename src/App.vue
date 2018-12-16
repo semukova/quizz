@@ -10,6 +10,9 @@
           <li class="nav-item active">
             <router-link class="nav-link" to="/">Опросы <span class="sr-only">(current)</span></router-link>
           </li>
+          <li class="nav-item">
+            <router-link class="nav-link" to="/history">Статистика</router-link>
+          </li>
         </ul>
         <form class="form-inline my-2 my-lg-0">
           <button @click="onSignOutClick" class="btn btn-outline-success my-2 my-sm-0" type="submit">Выйти</button>

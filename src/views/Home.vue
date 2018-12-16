@@ -53,6 +53,7 @@ export default class Home extends Vue {
 
   handleEnd() {
     this.currentQuiz = null;
+    this.getQuizzesList();
   }
 
   onSignOutClick() {
