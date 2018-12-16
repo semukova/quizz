@@ -1,26 +1,19 @@
 <template>
   <div class="container">
+    <h1 v-if="!currentQuiz">Доступные опросы</h1>
+    <h1 v-if="currentQuiz">Текущий опрос</h1>
     <Quiz 
       v-if="currentQuiz"
       :quiz="currentQuiz"
       v-on:end="handleEnd">
-      <div slot="intro" slot-scope="props">
-        This is my custom quiz header for {{props.title}}.
-      </div>
-      <div slot="results" slot-scope="props">
-        <h1>WOWOWOW!</h1> 
-          You got {{props.correct}} right out of 
-          {{props.length}} questions. 
-        Your percentage is {{props.perc}}%.
-      </div>
     </Quiz>
     <br>
     <table v-if="!currentQuiz" class="table">
       <thead>
         <tr>
-          <th>Quiz</th>
-          <th>Questions count</th>
-          <th>Action</th>
+          <th>Название</th>
+          <th>Количество вопросов</th>
+          <th>Действия</th>
         </tr>  
       </thead>
       <tbody>
@@ -28,7 +21,7 @@
           <td>{{ quiz.text }}</td>
           <td>{{ quiz.questions.length }}</td>
           <td>
-            <button @click="startQuiz(quiz['key'])" class="btn btn-success">Start</button>
+            <button @click="startQuiz(quiz['key'])" class="btn btn-success">Начать</button>
           </td>
         </tr>
       </tbody>
@@ -42,6 +35,7 @@ import axios from 'axios';
 import { Component, Vue } from 'vue-property-decorator';
 import Quiz from '@/components/Quiz.vue'; 
 import { db } from '../db';
+import callApi from "@/api";
 
 @Component({
   components: {
@@ -54,30 +48,11 @@ export default class Home extends Vue {
   currentQuiz: any = null;
 
   created() {
-    this.updateList();
+    this.getQuizzesList();
   }
 
   handleEnd() {
     this.currentQuiz = null;
-  }
-
-  updateList() {
-    this.quizzes = [];
-    db.ref(`quizzes`).once('value', (data:any) => {
-      const items:any[] = data.val();
-      const keys:string[] = Object.keys(items);
-      keys.forEach((k:any) => {
-        items[k].key = k;
-        this.quizzes.push(items[k]); 
-      });
-    });
-    const user:any = firebase.auth().currentUser;
-    db.ref(`current/${user.uid}`).once('value', (data:any) => {
-      const current = data.val();
-      if (current) {
-        this.currentQuiz = current;
-      }
-    });
   }
 
   onSignOutClick() {
@@ -94,27 +69,27 @@ export default class Home extends Vue {
   }
 
   startQuiz(id:any) {
-    const user:any = firebase.auth().currentUser;
-    const token = user.getIdToken();
-    token.then((tk:any) => {
-      axios.post(
-        "https://us-central1-test-b95ec.cloudfunctions.net/startQuiz",
-       // "http://localhost:5000/test-b95ec/us-central1/startQuiz",
-        { quiz: id },
-        {
-          headers: {
-            "Authorization": `Bearer ${tk}`
-          }
-        }
-      )
-      .then((response:any) => {
-        if (response.data) {
-          this.currentQuiz = response.data;
-        }
-      }).catch((err) => {
-        console.log(err);
-      });   
-    })
+    callApi("startQuiz", { quiz: id })
+    .then((response:any) => {
+      if (response.data) {
+        this.currentQuiz = response.data;
+      }
+    }).catch((err) => {
+      // console.log(err);
+    });  
+  }
+
+  getQuizzesList() {
+    this.quizzes = [];
+    callApi("quizzesList", { })
+    .then((response:any) => {
+      this.quizzes = response.data.list;
+      if (response.data.current) {
+        this.currentQuiz = response.data.current;
+      }
+    }).catch((err) => {
+      // console.log(err);
+    });  
   }
 }
 </script>

@@ -4,6 +4,7 @@ import Router from "vue-router";
 import Home from "@/views/Home.vue";
 import Login from "@/views/Login.vue";
 import SignUp from "@/views/SignUp.vue";
+import History from "@/views/History.vue";
 import AddQuiz from "@/components/AddQuiz.vue";
 import EditQuiz from "@/components/EditQuiz.vue";
 import ListQuiz from "@/components/ListQuiz.vue";
@@ -54,6 +55,14 @@ const router:any = new Router({
       path: "/quizzes",
       name: "ListQuiz",
       component: ListQuiz,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: "/history",
+      name: "History",
+      component: History,
       meta: {
         requiresAuth: true
       }

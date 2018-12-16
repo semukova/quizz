@@ -1,19 +1,19 @@
 <template>
   <div class="container">
-    <h3>Sign In</h3>
+    <h3>Войти</h3>
     <form class="form">
       <div class="form-group">
-        <label for="email">Email address</label>
+        <label for="email">Email</label>
         <input class="form-control" id="email" type="text" v-model="email" placeholder="Email"><br>
       </div>
       <div class="form-group">
-        <label for="password">Password</label>
+        <label for="password">Пароль</label>
         <input class="form-control" id="password" type="password" v-model="password" placeholder="Password"><br>
       </div>
-      <button class="btn btn-success btn-sm" @click="onLoginClick">Connection</button>
+      <button class="btn btn-success btn-sm" @click="onLoginClick">Вход</button>
     </form>
     <div class="form-group">
-      <p>You don't have an account ? You can <router-link class="btn btn-primary btn-sm" to="/sign-up">create one</router-link></p>
+      <p>Нужен аккаунт ? <router-link class="btn btn-primary btn-sm" to="/sign-up">Создать</router-link></p>
       <div v-if="error" class="alert alert-danger alert-dismissible fade show" role="alert">
         {{error}}
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">

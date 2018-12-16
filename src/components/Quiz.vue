@@ -1,17 +1,11 @@
 <template>
-  <div>
-    <div v-if="questionStage">
+  <div class="jumbotron jumbotron-fluid">
+    <div v-if="questionStage" class="container">
       <Question 
                 :question="questions[currentQuestion]"
                 v-on:answer="handleAnswer"
                 :question-number="currentQuestion+1"
       ></Question>
-    </div>
-    
-    <div v-if="resultsStage">
-      <slot name="results" :length="questions.length" :perc="perc" :correct="correct">
-      You got {{correct}} right out of {{questions.length}} questions. Your percentage is {{perc}}%.
-      </slot>
     </div>
   </div>
 </template>
@@ -23,6 +17,7 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { IQuestionData } from "../types";
 import Question from '@/components/Question.vue'; 
 import { db } from '../db';
+import callApi from "@/api";
 
 @Component({
   components: {
@@ -31,17 +26,14 @@ import { db } from '../db';
 })
 export default class Quiz extends Vue {
   questionStage:boolean = false;
-  resultsStage:boolean = false;
   title:string = '';
   questions: IQuestionData[] = [];
-  perc:string = "";
   currentQuestion:number = 0;
   quizId:string = "";
 
   @Prop() private quiz!: any;
 
   created() {
-    console.log(this.quiz);
     if (this.quiz) {
       this.quizId = this.quiz.id;
       this.currentQuestion = this.quiz.currentQuestion ? this.quiz.currentQuestion : 0;
@@ -52,33 +44,18 @@ export default class Quiz extends Vue {
   }
 
   handleAnswer(answer:string) {
-    const user:any = firebase.auth().currentUser;
-    const token = user.getIdToken();
-    token.then((tk:any) => {
-      axios.post(
-        "https://us-central1-test-b95ec.cloudfunctions.net/answerQuiz",
-       // "http://localhost:5000/test-b95ec/us-central1/answerQuiz",
-        { quiz: this.quizId, question: this.currentQuestion, answer },
-        {
-          headers: {
-            "Authorization": `Bearer ${tk}`
-          }
-        }
-      )
-      .then((response:any) => {
-        const data:any = response.data;
-        if (data.complete) {
-          this.questionStage = false;
-          this.resultsStage = true;
-          this.perc = data.perc;
-          this.$emit('end');
-        } else {
-          this.currentQuestion = data.currentQuestion;
-        }
-      }).catch((err) => {
-        console.log(err);
-      });   
-    })
+    callApi("answerQuiz", { quiz: this.quizId, question: this.currentQuestion, answer })
+    .then((response:any) => {
+      const data:any = response.data;
+      if (data.complete) {
+        this.questionStage = false;
+        this.$emit('end');
+      } else {
+        this.currentQuestion = data.currentQuestion;
+      }
+    }).catch((err:any) => {
+      // console.log(err);
+    }); 
   }
 }
 </script>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <strong>Question {{ questionNumber }}:</strong><br/>
+    <strong>Вопрос № {{ questionNumber }}:</strong><br/>
     <strong>{{ question.text }} </strong>
 
     <div v-if="question.type === 'tf'">
@@ -14,7 +14,7 @@
       </div>
     </div>
 
-    <button @click="submitAnswer">Answer</button>
+    <button @click="submitAnswer" class="btn btn-primary">Ответить</button>
   </div>
 </template>
 

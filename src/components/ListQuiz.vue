@@ -1,13 +1,15 @@
 <template>
   <div class="container">
-    <h1>List Quiz</h1>
-    <router-link :to="'/quizzes/add'" class="btn btn-warning">Add Quiz</router-link>
+    <h1>Список опросов</h1>
+    <router-link :to="'/quizzes/add'" class="btn btn-warning btn-sm">Добавить опрос</router-link>
+    <br>
+    <br>
     <table class="table table-striped">
       <thead>
         <tr>
-          <th>Text</th>
-          <th>Questions</th>
-          <th colspan="2">Actions</th>
+          <th>Название</th>
+          <th>Количество вопросов</th>
+          <th colspan="2">Действия</th>
         </tr>
       </thead>
       <tbody>
@@ -15,10 +17,10 @@
           <td>{{ item.text }}</td>
           <td>{{ item.questions.length }}</td>
           <td>
-            <router-link :to="'/quizzes/edit/' + item['key']" class="btn btn-warning">Edit</router-link>
+            <router-link :to="'/quizzes/edit/' + item['key']" class="btn btn-warning">Редактировать</router-link>
           </td>
           <td>
-            <button @click="deleteItem(item['key'])" class="btn btn-danger">Delete</button>
+            <button @click="deleteItem(item['key'])" class="btn btn-danger">Удалить</button>
           </td>
         </tr>
       </tbody>

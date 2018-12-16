@@ -2,45 +2,50 @@
 <div class="container">
   <div class="card">
       <div class="card-header"> 
-        <h3>Add Quiz</h3>
+        <h3>Редактировать опрос</h3>
       </div>
       <div class="card-body">
           <form @submit.prevent="updateItem">
             <div class="form-group">
-              <label for="title">Title:</label>
+              <label for="title">Название:</label>
               <input id="title" type="text" v-model="text" class="form-control">
             </div>
             <div class="row-question" v-for="(question, q_key, q_index) in questions" :key="`${q_key}`">
               <hr/>
               <div class="form-group">
-                <label for="text">Text:</label>
+                <label for="text">Текст:</label>
                 <input id="text" type="text" v-model="question.text" class="form-control">
               </div>
               <div class="form-group">
-                <label :for="'type'+q_index">Type:</label>
+                <label :for="'type'+q_index">Тип:</label>
                 <div class="select">
                   <select :id="'type'+q_index" v-model="question.type" class="custom-select">
-                    <option disabled value="">Please choose Workplace</option>
-                    <option value="tf">tf</option>
-                    <option value="mc">mc</option>
+                    <option disabled value="">Выберите тип</option>
+                    <option value="tf">Да/Нет</option>
+                    <option value="mc">Список</option>
                   </select>
                 </div>
               </div>
-              <label for="answer">Answer:</label>
+              <label for="answer">Ответ:</label>
               <input id="answer" type="text" v-model="question.answer" class="form-control">
               <div v-if="question.type === 'mc'">
+                <p>Варианты для выбора (включая правильный)</p>
                 <div class="row-question" v-for="(answer, a_key, a_index) in question.answers" :key="`${a_key}`">
-                  <label :for="'answer'+q_index+'_'+a_index">Answer:</label>
+                  <label :for="'answer'+q_index+'_'+a_index">Вариант №{{a_key+1}}:</label>
                   <input :id="'answer'+q_index+'_'+a_index" type="text" v-model="answer.value" class="form-control">
                 </div>
-                <input @click="onAddAnswerClick(q_key)" type="button" value="Add Answer" class="btn btn-success">
+                <br>
+                <div class="form-group">
+                  <input @click="onAddAnswerClick(q_key)" type="button" value="Добавить ответ" class="btn btn-success btn-sm">
+                </div>
               </div>
             </div>
+            <hr>
             <div class="form-group">
-              <input @click="onAddQuestionClick" type="button" value="Add Question" class="btn btn-success">
+              <input @click="onAddQuestionClick" type="button" value="Добавить вопрос" class="btn btn-success btn-sm">
             </div>
             <div class="form-group">
-              <input type="submit" value="Submit" class="btn btn-primary">
+              <input type="submit" value="Сохранить" class="btn btn-primary btn-sm">
             </div>
           </form>
       </div>
@@ -85,11 +90,12 @@ export default class EditQuiz extends Vue {
   }
 
   updateItem() {
-    db.ref(`quizzes/-${this.$route.params.id}`).set({
+    db.ref(`quizzes/${this.$route.params.id}`).set({
       title : this.title,
       text: this.text,
       questions: this.questions,
     });
+    this.$router.push("/quizzes");
   }
 }
 </script>
