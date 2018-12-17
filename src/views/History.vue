@@ -37,7 +37,7 @@
                     <td>{{ question.score }}</td>
                   </tr>
                 </tbody>
-                <input @click="onReleaseQuiz(quiz.user_id, quiz.quiz_id)" type="button" value="Сборос" class="btn btn-success btn-sm">
+                <input @click="onReleaseQuiz(quiz.user_id, quiz.quiz_id)" type="button" value="Сброс" class="btn btn-success btn-sm">
               </table>
             </td>
           </tr>        
@@ -100,12 +100,14 @@ export default class History extends Vue {
         const usersKeys = Object.keys(response.data);
         for(let i = 0; i < usersKeys.length; i++) {
           const user:any = response.data[usersKeys[i]];
-          for(let j = 0; j < user.history.length; j++) {
-            const quiz:any = user.history[j];
-            if(quiz.complete) {
-              this.quizzes.push(
-                this.mapUserStat(user, quiz),
-              )
+          if(user.history) {
+            for(let j = 0; j < user.history.length; j++) {
+              const quiz:any = user.history[j];
+              if(quiz.complete) {
+                this.quizzes.push(
+                  this.mapUserStat(user, quiz),
+                )
+              }
             }
           }
         }
