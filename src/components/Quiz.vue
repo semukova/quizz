@@ -1,11 +1,16 @@
 <template>
-  <div class="jumbotron jumbotron-fluid">
-    <div v-if="questionStage" class="container">
-      <Question 
-                :question="questions[currentQuestion]"
-                v-on:answer="handleAnswer"
-                :question-number="currentQuestion+1"
-      ></Question>
+  <div>
+    <div class="jumbotron jumbotron-fluid">
+      <div v-if="questionStage" class="container">
+        <Question 
+                  :question="questions[currentQuestion]"
+                  v-on:answer="handleAnswer"
+                  :question-number="currentQuestion+1"
+        ></Question>
+      </div>
+    </div>
+    <div v-if="help" class="alert alert-info" role="alert">
+      {{help}}
     </div>
   </div>
 </template>
@@ -30,6 +35,8 @@ export default class Quiz extends Vue {
   questions: IQuestionData[] = [];
   currentQuestion:number = 0;
   quizId:string = "";
+  help:any = null;
+  helpData:string = "";
 
   @Prop() private quiz!: any;
 
@@ -40,6 +47,8 @@ export default class Quiz extends Vue {
       this.questions = this.quiz.data.questions;
       this.title = this.quiz.data.text;
       this.questionStage = true;
+      this.help = null;
+      this.helpData = this.questions[this.currentQuestion].help;
     }
   }
 
@@ -51,10 +60,17 @@ export default class Quiz extends Vue {
         this.questionStage = false;
         this.$emit('end', data.perc);
       } else {
+        if (this.currentQuestion === data.currentQuestion) {
+          if(this.helpData && this.helpData.length > 0) {
+            this.help = this.helpData;
+          }
+        } else {
+          this.help = null;
+        }
         this.currentQuestion = data.currentQuestion;
       }
     }).catch((err:any) => {
-      // console.log(err);
+
     }); 
   }
 }

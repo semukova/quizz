@@ -5,7 +5,7 @@
       <thead>
         <tr>
           <th>Пользователь</th>
-          <th>Опрос</th>
+          <th>Учебный тест</th>
           <th>Время</th>
           <th>Очки</th>
         </tr>  
@@ -37,24 +37,61 @@
                     <td>{{ question.score }}</td>
                   </tr>
                 </tbody>
-                <input @click="onReleaseQuiz(quiz.user_id, quiz.quiz_id)" type="button" value="Сброс" class="btn btn-success btn-sm">
+                <div class="btn-group" role="group" aria-label="Basic example">
+                  <button @click="onReleaseQuiz(quiz.user_id, quiz.quiz_id)" class="btn btn-success btn-sm">Сброс</button>
+                  <button @click="onClickShowAttempts(quiz.user_id, quiz.quiz_id)" class="btn btn-info btn-sm"><i class="fa fa-line-chart" aria-hidden="true"></i>&nbsp;Попытки</button>
+                  <button @click="onClickShowTimes(quiz.user_id, quiz.quiz_id)" class="btn btn-info btn-sm"><i class="fa fa-line-chart" aria-hidden="true"></i>&nbsp;Время</button>
+                </div>
               </table>
             </td>
           </tr>        
         </template>
       </tbody>
     </table>
+    <ModalWindow v-if="showModal" v-on:close="onCloseModal">
+      <BarChart ref="barChart" slot="body"></BarChart>
+      <h3 slot="header">{{chartTitle}}</h3>
+    </ModalWindow>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue, Emit } from 'vue-property-decorator';
+import { mixins } from "vue-class-component";
 import firebase from 'firebase';
 import callApi from "@/api";
+import ModalWindow from "@/components/ModalWindow.vue";
+import { Bar } from "vue-chartjs";
+import _ from "underscore";
 
 @Component
+class BarChart extends mixins(Bar) {
+  setData(label:string, labels:string[], data:number[]) {
+     this.renderChart({
+      labels,
+      datasets: [
+        {
+          data,
+          label,
+          backgroundColor: '#f87979',
+        }
+      ]
+    });   
+  }
+}
+
+@Component({
+  components: {
+    ModalWindow,
+    BarChart,
+  },
+})
 export default class History extends Vue {
   quizzes:any[] = [];
+  showModal:boolean = false;
+  cache:any = null;
+  chartTitle:string = "";
+
   created() {
     this.geHistory();
   }
@@ -98,6 +135,7 @@ export default class History extends Vue {
     .then((response:any) => {
       if (response.data) {
         const usersKeys = Object.keys(response.data);
+        this.cache = response.data;
         for(let i = 0; i < usersKeys.length; i++) {
           const user:any = response.data[usersKeys[i]];
           if(user.history) {
@@ -112,18 +150,56 @@ export default class History extends Vue {
           }
         }
       }
-    }).catch((err) => {
-      // console.log(err);
-    });  
+    }).catch((err) => {});  
   }
 
   onReleaseQuiz(user_id:string, quiz_id:string) {
     callApi("releaseQuiz", { user_id, quiz_id })
     .then((response:any) => {
+      
+    }).catch((err) => {}); 
+  }
 
-    }).catch((err) => {
-      // console.log(err);
-    }); 
+  onClickShowAttempts(user:any, quiz:any) {
+    this.showModal = true;
+    setTimeout(() => {
+      const userData:any = this.cache[user];
+      const historyEnt:any = _.findWhere(userData.history, { key : quiz });
+      if (historyEnt && historyEnt.complete) {
+        const historyData:any = this.mapUserStat(user, historyEnt).questions;
+        const labels:string[] = [];
+        const data:number[] = [];
+        historyData.forEach((element:any) => {
+          labels.push(element.key);
+          data.push(element.attempts);
+        });
+        this.chartTitle = "Попытки";
+        (<BarChart>this.$refs.barChart).setData("Попытки", labels, data);
+      }
+    }, 10);
+  }
+
+  onClickShowTimes(user:any, quiz:any) {
+    this.showModal = true;
+    setTimeout(() => {
+      const userData:any = this.cache[user];
+      const historyEnt:any = _.findWhere(userData.history, { key : quiz });
+      if (historyEnt && historyEnt.complete) {
+        const historyData:any = this.mapUserStat(user, historyEnt).questions;
+        const labels:string[] = [];
+        const data:number[] = [];
+        historyData.forEach((element:any) => {
+          labels.push(element.key);
+          data.push(element.time * 60);
+        });
+        this.chartTitle = "Время";
+        (<BarChart>this.$refs.barChart).setData("Время", labels, data);
+      }
+    }, 10);
+  }
+
+  onCloseModal() {
+    this.showModal = false;
   }
 }
 </script>

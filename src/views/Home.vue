@@ -1,10 +1,10 @@
 <template>
   <div class="container">
-    <h1 v-if="!currentQuiz">Доступные опросы</h1>
-    <h1 v-if="currentQuiz">Текущий опрос</h1>
+    <h1 v-if="!currentQuiz">Доступные учебные тест</h1>
+    <h1 v-if="currentQuiz">Текущий учебный тест</h1>
 
     <div v-if="result" class="alert alert-warning alert-dismissible fade show" role="alert">
-      Тестирование завершено, общий счет: {{result}}
+      Молодец, ты прошел тест! Твой балл: {{result}}
       <button @click="onResultClose" type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>
@@ -62,7 +62,7 @@ export default class Home extends Vue {
   }
 
   handleEnd(perc:number) {
-    this.result = perc;
+    this.result = Math.round(perc);
   }
 
   onResultClose() {

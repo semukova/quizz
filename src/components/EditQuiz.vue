@@ -2,7 +2,7 @@
 <div class="container">
   <div class="card">
       <div class="card-header"> 
-        <h3>Редактировать опрос</h3>
+        <h3>Редактировать учебный тест</h3>
       </div>
       <div class="card-body">
           <form @submit.prevent="updateItem">
@@ -27,6 +27,8 @@
                   </select>
                 </div>
               </div>
+              <label for="answer">Подсказка:</label>
+              <input id="help" type="text" v-model="question.help" class="form-control">
               <label for="answer">Ответ:</label>
               <input id="answer" type="text" v-model="question.answer" class="form-control">
               <div v-if="question.type === 'mc'">
@@ -64,6 +66,7 @@ import { db } from '../db';
 export default class EditQuiz extends Vue {
   title:string = "";
   text:string = "";
+  help:string = "";
   questions: IQuestionData[] = [];
 
   created() {
@@ -78,6 +81,7 @@ export default class EditQuiz extends Vue {
   onAddQuestionClick() {
     this.questions.push({
       text: "",
+      help: "",
       type: "tf",
       answer: "",
       answers: [],
@@ -104,6 +108,7 @@ export default class EditQuiz extends Vue {
     db.ref(`quizzes/${this.$route.params.id}`).set({
       title : this.title,
       text: this.text,
+      help: this.help,
       questions: this.questions,
     });
     this.$router.push("/quizzes");
