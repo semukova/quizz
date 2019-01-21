@@ -1,7 +1,7 @@
 <template>
   <div class="container">
-    <h1>Список учебных тестов</h1>
-    <router-link :to="'/quizzes/add'" class="btn btn-warning btn-sm">Добавить учебный тест</router-link>
+    <h1>Список тестов учебной деятельности</h1>
+    <router-link :to="'/quizzes/add'" class="btn btn-warning btn-sm">Добавить тест учебной деятельности</router-link>
     <br>
     <br>
     <table class="table table-striped">

@@ -1,0 +1,32 @@
+[debug] [2019-01-21T17:34:53.891Z] ----------------------------------------------------------------------
+[debug] [2019-01-21T17:34:53.894Z] Command:       C:\nodejs\node.exe C:\Users\vugluskr\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js serve --only functions
+[debug] [2019-01-21T17:34:53.894Z] CLI Version:   6.1.2
+[debug] [2019-01-21T17:34:53.894Z] Platform:      win32
+[debug] [2019-01-21T17:34:53.894Z] Node Version:  v10.14.1
+[debug] [2019-01-21T17:34:53.895Z] Time:          Mon Jan 21 2019 22:34:53 GMT+0500 (GMT+05:00)
+[debug] [2019-01-21T17:34:53.895Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2019-01-21T17:34:53.906Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2019-01-21T17:34:53.907Z] > authorizing via signed-in user
+[debug] [2019-01-21T17:34:53.907Z] [iam] checking project test-b95ec for permissions ["firebase.projects.get"]
+[debug] [2019-01-21T17:34:53.909Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/test-b95ec:testIamPermissions  
+
+[debug] [2019-01-21T17:34:55.085Z] <<< HTTP RESPONSE 200
+[debug] [2019-01-21T17:34:55.086Z] >>> HTTP REQUEST GET https://cloudresourcemanager.googleapis.com/v1/projects/test-b95ec  
+ 
+[debug] [2019-01-21T17:34:56.165Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Serving from 'H:\Projects\quiz\quiz'...
+[info] 
+[info] i  functions: Preparing to emulate functions.
+[debug] [2019-01-21T17:34:56.774Z] Fetching environment
+[debug] [2019-01-21T17:34:56.781Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/633155461441:getServerAppConfig  
+ 
+[debug] [2019-01-21T17:34:57.190Z] <<< HTTP RESPONSE 200
+[debug] [2019-01-21T17:34:57.191Z] Starting @google-cloud/functions-emulator
+[debug] [2019-01-21T17:34:58.734Z] Parsing function triggers
+[info] +  functions: releaseQuiz: http://localhost:5000/test-b95ec/us-central1/releaseQuiz
+[info] +  functions: quizzesList: http://localhost:5000/test-b95ec/us-central1/quizzesList
+[info] +  functions: startQuiz: http://localhost:5000/test-b95ec/us-central1/startQuiz
+[info] +  functions: answerQuiz: http://localhost:5000/test-b95ec/us-central1/answerQuiz
+[info] +  functions: getHistory: http://localhost:5000/test-b95ec/us-central1/getHistory

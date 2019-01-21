@@ -5,7 +5,7 @@
       <thead>
         <tr>
           <th>Пользователь</th>
-          <th>Учебный тест</th>
+          <th>Тест</th>
           <th>Время</th>
           <th>Очки</th>
         </tr>  
@@ -75,7 +75,11 @@ class BarChart extends mixins(Bar) {
           label,
           backgroundColor: '#f87979',
         }
-      ]
+      ],
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+      }
     });   
   }
 }
@@ -170,7 +174,7 @@ export default class History extends Vue {
         const labels:string[] = [];
         const data:number[] = [];
         historyData.forEach((element:any) => {
-          labels.push(element.key);
+          labels.push(element.key + 1);
           data.push(element.attempts);
         });
         this.chartTitle = "Попытки";
@@ -189,7 +193,7 @@ export default class History extends Vue {
         const labels:string[] = [];
         const data:number[] = [];
         historyData.forEach((element:any) => {
-          labels.push(element.key);
+          labels.push(element.key + 1);
           data.push(element.time * 60);
         });
         this.chartTitle = "Время";

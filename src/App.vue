@@ -8,7 +8,7 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item active">
-            <router-link class="nav-link" to="/">Учебные тесты <span class="sr-only">(current)</span></router-link>
+            <router-link class="nav-link" to="/">Тесты учебной деятельности <span class="sr-only">(current)</span></router-link>
           </li>
           <li v-if="isAdmin()" class="nav-item">
             <router-link class="nav-link" to="/history">Статистика</router-link>

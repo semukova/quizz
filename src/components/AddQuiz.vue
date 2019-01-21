@@ -2,7 +2,7 @@
 <div class="container">
   <div class="card">
       <div class="card-header"> 
-        <h3>Добавить учебный тест</h3>
+        <h3>Добавить тест учебной деятельности</h3>
       </div>
       <div class="card-body">
           <form @submit.prevent="addItem">

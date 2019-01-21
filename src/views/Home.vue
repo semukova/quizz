@@ -1,10 +1,10 @@
 <template>
   <div class="container">
-    <h1 v-if="!currentQuiz">Доступные учебные тест</h1>
-    <h1 v-if="currentQuiz">Текущий учебный тест</h1>
+    <h1 v-if="!currentQuiz">Доступные тесты учебной деятельности</h1>
+    <h1 v-if="currentQuiz">Текущий тест учебной деятельности</h1>
 
     <div v-if="result" class="alert alert-warning alert-dismissible fade show" role="alert">
-      Молодец, ты прошел тест! Твой балл: {{result}}
+      Молодец, ты прошел тест учебной деятельности! Твой балл: {{result}}
       <button @click="onResultClose" type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>
