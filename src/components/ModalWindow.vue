@@ -3,22 +3,15 @@
     <div class="modal-mask">
       <div class="modal-wrapper">
         <div class="modal-container">
-
           <div class="modal-header">
             <slot name="header">
               default header
             </slot>
+            <button @click="onClockClose" class="modal-default-button">Закрыть</button>
           </div>
-
           <div class="modal-body">
             <slot name="body">
               default body
-            </slot>
-          </div>
-
-          <div class="modal-footer">
-            <slot name="footer">
-              <button @click="onClockClose" class="modal-default-button">Закрыть</button>
             </slot>
           </div>
         </div>
