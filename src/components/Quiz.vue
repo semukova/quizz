@@ -60,6 +60,8 @@ export default class Quiz extends Vue {
         this.questionStage = false;
         this.$emit('end', data.perc);
       } else {
+        console.log(this.currentQuestion);
+        this.helpData = this.questions[this.currentQuestion].help;
         if (this.currentQuestion === data.currentQuestion) {
           if(this.helpData && this.helpData.length > 0) {
             this.help = this.helpData;
